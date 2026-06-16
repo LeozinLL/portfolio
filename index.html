@@ -509,6 +509,10 @@
         contain-intrinsic-size: 1px 800px;
       }
 
+      #saturn-scene {
+        will-change: transform;
+        transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
       .saturn-ring {
         transform-origin: center;
         animation: ringSpin 60s linear infinite;
@@ -681,6 +685,7 @@
         </div>
 
         <div
+          id="saturn-scene"
           class="absolute top-[20%] right-[10%] hidden lg:block z-[1] pointer-events-none"
           aria-hidden="true"
         >
@@ -714,7 +719,6 @@
               stroke-width="0.8"
               opacity="0.45"
             />
-            <ellipse cx="106" cy="106" rx="14" ry="9" fill="var(--accent)" opacity="0.14" />
           </svg>
 
           <svg
@@ -1054,9 +1058,9 @@
                 <span class="text-[var(--text)] font-semibold">modernização do checkout</span> em
                 uma plataforma de gestão de eventos — o checkout anterior estava defasado e foi um
                 dos motivadores da atualização do sistema. <br />
-                Atendo clientes como freelancer paralelamente, e venho estudando e aplicando
-                <span class="text-[var(--text)] font-semibold">IA</span> no fluxo de
-                desenvolvimento.
+                Em paralelo, atendo clientes como freelancer e sigo estudando ferramentas e
+                práticas que estão mudando a forma como se desenvolve — IA generativa, por
+                exemplo, já virou parte natural da minha rotina.
               </p>
 
               <ul class="grid sm:grid-cols-2 gap-3 pt-6" role="list">
@@ -1103,22 +1107,7 @@
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  Adoro aprender coisas novas
-                </li>
-                <li class="flex items-center gap-3">
-                  <svg
-                    class="w-5 h-5 text-accent-500 flex-shrink-0"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  Aplico IA no fluxo de desenvolvimento
+                  Curto colaborar e compartilhar o que aprendo
                 </li>
               </ul>
             </div>
@@ -1772,13 +1761,12 @@
                   <circle cx="12" cy="11" r="2" />
                   <path d="M5 11a7 7 0 0 1 14 0" />
                 </svg>
-                IA no dia a dia
+                O que venho estudando
               </h3>
               <p class="text-sm text-[var(--text-muted)] leading-relaxed">
-                Estudo e aplico IA no fluxo de desenvolvimento, usando ferramentas como
-                <span class="text-[var(--text)] font-medium">Cursor</span>,
-                <span class="text-[var(--text)] font-medium">Copilot</span> e modelos generativos
-                como aceleradores. Também exploro uso de IA em features dos produtos onde atuo.
+                Cursor, Copilot e modelos generativos entraram na rotina — uso para acelerar
+                tarefas repetitivas, explorar soluções e prototipar features. Nos produtos onde
+                atuo, também investigo onde IA pode fazer sentido de verdade.
               </p>
             </div>
           </div>
@@ -2243,6 +2231,36 @@
         } catch (err) {
           console.warn('Three.js init failed:', err);
         }
+      })();
+
+      // Saturn scene: subtle parallax of the whole saturn+constellations group
+      (function initSaturn() {
+        const sceneEl = document.getElementById('saturn-scene');
+        if (!sceneEl || !hasHover || reduceMotion) return;
+
+        let mouseX = 0;
+        let mouseY = 0;
+        let curX = 0;
+        let curY = 0;
+
+        window.addEventListener(
+          'mousemove',
+          (e) => {
+            mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+            mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+          },
+          { passive: true },
+        );
+
+        const tick = () => {
+          curX += (mouseX - curX) * 0.05;
+          curY += (mouseY - curY) * 0.05;
+          const tx = curX * 24;
+          const ty = curY * 18;
+          sceneEl.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+          requestAnimationFrame(tick);
+        };
+        tick();
       })();
     </script>
   </body>
